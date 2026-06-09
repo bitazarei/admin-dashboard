@@ -33,8 +33,13 @@ Built with **Next.js 16 (App Router)**, **Tailwind CSS**, **Shadcn/ui**, **Prism
 
 ## 📸 Screenshots
 
-> *Add screenshots of your login page, dashboard, user table, and mobile view here.*
+> *<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/90a0741f-ee3c-43ef-8f13-dc8bc94d7848" />
+*<img width="1366" height="768" alt="Screenshot (182)" src="https://github.com/user-attachments/assets/f6b613ed-b96f-4dd3-bb8c-52c184d8dd43" />
+*
+><img width="1366" height="768" alt="Screenshot (181)" src="https://github.com/user-attachments/assets/54629d29-aebc-4304-bad1-085097287188" />
+<img width="656" height="1728" alt="localhost_3000_dashboard (2)" src="https://github.com/user-attachments/assets/f3c75228-00a7-45aa-b534-079a04539b52" />
 
+> *
 ---
 
 ## 🚀 Getting Started
