@@ -56,7 +56,6 @@ export function UserTable<
     getSortedRowModel: getSortedRowModel(),
   });
 
-  // اطلاع‌رسانی به parent در مورد تغییر انتخاب‌ها
   useEffect(() => {
     const selectedRows = table
       .getSelectedRowModel()
@@ -91,7 +90,7 @@ export function UserTable<
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 text-blue-500"
               onClick={() => onEdit?.(user)}
             >
               <Pencil className="h-4 w-4" />
@@ -109,13 +108,13 @@ export function UserTable<
 
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500">Email:</span>
+            <span className="text-black">Email:</span>
             <span className="text-gray-700 break-all text-right ml-2">
               {user.email}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Role:</span>
+            <span className="text-black">Role:</span>
             <Badge variant={user.role === "Admin" ? "default" : "secondary"}>
               {user.role}
             </Badge>
@@ -123,9 +122,7 @@ export function UserTable<
           <div className="flex justify-between">
             <span className="text-gray-500">Status:</span>
             <Badge
-              className={
-                user.status === "Active" ? "bg-green-500" : "bg-red-500"
-              }
+              className={user.status === "Active" ? "bg-black" : "bg-black"}
             >
               {user.status}
             </Badge>
@@ -179,7 +176,7 @@ export function UserTable<
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-8 w-8 p-0"
+                                  className="h-8 w-8 p-0 text-blue-500"
                                   onClick={() => onEdit?.(user)}
                                 >
                                   <Pencil className="h-4 w-4" />
@@ -221,24 +218,6 @@ export function UserTable<
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
       </div>
 
       {/* نمای موبایل (کارت‌ها) */}
@@ -260,31 +239,6 @@ export function UserTable<
           {data.length === 0 && (
             <div className="text-center py-8 text-gray-500">No results.</div>
           )}
-        </div>
-
-        <div className="flex items-center justify-between gap-2 mt-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="flex-1"
-          >
-            Previous
-          </Button>
-          <span className="text-sm text-gray-500">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="flex-1"
-          >
-            Next
-          </Button>
         </div>
       </div>
     </div>

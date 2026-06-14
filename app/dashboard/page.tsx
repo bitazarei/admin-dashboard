@@ -20,36 +20,48 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="p-8 flex flex-col w-full justify-center">
+    <div className="flex flex-col p-10 w-full min-h-screen">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Welcome back, {user?.name || "Admin"}!</h1>
-        <p className="text-muted-foreground">Here's what's happening with your users today.</p>
+        <h1 className="text-2xl font-bold">
+          Welcome back, {user?.name || "Admin"}!
+        </h1>
+        <p className="text-muted-foreground">
+          Here is what is happening with your users today.
+        </p>
       </div>
 
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard1
-          icon={<Users className="w-8 h-8" />}
-          title="Total Users"
-          value={totalUser}
-        />
-        <StatsCard1
-          icon={<UserCheck className="w-8 h-8" />}
-          title="Active Users"
-          value={activeUser}
-          change={20.1}
-        />
-        <StatsCard1
-          icon={<Shield className="w-8 h-8" />}
-          title="Admins"
-          value={adminUser}
-          change={5}
-        />
-        <StatsCard1
-          icon={<ShieldAlert className="w-8 h-8" />}
-          title="Inactive Users"
-          value={inactiveUser}
-          change={-1}
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        <div className="w-full">
+          <StatsCard1
+            icon={<Users className="w-8 h-8" />}
+            title="Total Users"
+            value={totalUser}
+          />
+        </div>
+        <div className="w-full">
+          <StatsCard1
+            icon={<UserCheck className="w-8 h-8" />}
+            title="Active Users"
+            value={activeUser}
+            change={20.1}
+          />
+        </div>
+        <div className="w-full">
+          <StatsCard1
+            icon={<Shield className="w-8 h-8" />}
+            title="Admins"
+            value={adminUser}
+            change={5}
+          />
+        </div>
+        <div className="w-full">
+          <StatsCard1
+            icon={<ShieldAlert className="w-8 h-8" />}
+            title="Inactive Users"
+            value={inactiveUser}
+            change={-1}
+          />
+        </div>
       </div>
     </div>
   );

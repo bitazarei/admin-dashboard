@@ -30,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${manrope.variable} h-full w-full bg-black`}>
+      <body className="min-h-full w-full flex flex-col">{children}</body>
     </html>
   );
 }

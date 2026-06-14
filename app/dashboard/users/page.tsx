@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { UserTable } from "./UserTable";
 import { columns } from "./columns";
 import HeaderTable from "./HeaderTable";
-import { BulkEditDialog } from "./BlukEditDialog";
+import { BulkEditDialog } from "./BulkEditDialog";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +33,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import NewUserForm from './NewUserForm';
 
 type User = {
   id: string;
@@ -46,16 +48,46 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [bulkEditOpen, setBulkEditOpen] = useState(false);
-  const [editUser, setEditUser] = useState<User | null>(null);
-  const [deleteUser, setDeleteUser] = useState<User | null>(null);
   const [editData, setEditData] = useState({
     name: "",
     email: "",
     role: "",
     status: "",
   });
+  const [deleteUser, setDeleteUser] = useState<User | null>(null);
 
-  // گرفتن کاربران از API
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const isCreateOpen = searchParams.get("create") === "true";
+  const selectedUserId = searchParams.get("edit");
+  const editingUser = users.find(user => user.id === selectedUserId);
+  const isEditOpen = !!selectedUserId && !!editingUser;
+
+  const openCreateModal = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("create", "true");
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const closeCreateModal = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("create");
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const openEditModal = (userId: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("edit", userId);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const closeEditModal = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("edit");
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
   const fetchUsers = useCallback(async () => {
     try {
       const res = await fetch("/api/users");
@@ -67,29 +99,29 @@ export default function UsersPage() {
     }
   }, []);
 
-  const handleSelectedRowsChange = useCallback((rows: User[]) => {
-    setSelectedUsers(rows);
-  }, []);
-
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
+  const handleSelectedRowsChange = useCallback((rows: User[]) => {
+    setSelectedUsers(rows);
+  }, []);
+
   const handleEdit = useCallback((user: User) => {
-    setEditUser(user);
     setEditData({
       name: user.name,
       email: user.email,
       role: user.role,
       status: user.status,
     });
+    openEditModal(user.id);
   }, []);
 
   const handleSaveEdit = async () => {
-    if (!editUser) return;
+    if (!selectedUserId) return;
 
     try {
-      const res = await fetch(`/api/users/${editUser.id}`, {
+      const res = await fetch(`/api/users/${selectedUserId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editData),
@@ -97,7 +129,7 @@ export default function UsersPage() {
 
       if (res.ok) {
         await fetchUsers();
-        setEditUser(null);
+        closeEditModal();
       }
     } catch (error) {
       console.error("Edit error:", error);
@@ -125,17 +157,29 @@ export default function UsersPage() {
     }
   };
 
+  const handleForm = async (name: string, email: string, password: string, role: string, status: string) => {
+    const res = await fetch("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, role, status }),
+    });
+
+    if (res.ok) {
+      await fetchUsers();
+      closeCreateModal();
+    }
+  };
+
   const handleBulkEdit = async (role: string, status: string) => {
     const ids = selectedUsers.map((u) => u.id);
-
-    const res = await fetch("/api/bulk", {
+    const res = await fetch("/api/users", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids, role, status }),
     });
 
     if (res.ok) {
-      fetchUsers();
+      await fetchUsers();
       setSelectedUsers([]);
       setBulkEditOpen(false);
     }
@@ -148,7 +192,6 @@ export default function UsersPage() {
 
   const handleDeleteSelected = async () => {
     if (selectedUsers.length === 0) return;
-
     const ids = selectedUsers.map((u) => u.id);
 
     try {
@@ -167,19 +210,22 @@ export default function UsersPage() {
     }
   };
 
+  const memoUsers = useMemo(() => users, [users]);
+
   return (
-    <div className="w-full px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 lg:py-10">
-      <div className="max-w-[1400px] mx-auto">
+    <div className="w-full px-3 p-10 flex justify-start items-start min-h-screen sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 lg:py-10">
+      <div className="w-full mx-auto">
         <HeaderTable
           selectedCount={selectedUsers.length}
           onEditSelected={handleEditSelected}
           onDeleteSelected={handleDeleteSelected}
+          onFormSelected={openCreateModal}
         />
 
         <div className="mt-4 sm:mt-6">
           <UserTable
             columns={columns}
-            data={users}
+            data={memoUsers}
             onSelectedRowsChange={handleSelectedRowsChange}
             onEdit={handleEdit}
             onDelete={handleDelete}
@@ -193,79 +239,76 @@ export default function UsersPage() {
           onSave={handleBulkEdit}
         />
 
+        <NewUserForm
+          open={isCreateOpen}
+          onOpenCreate={closeCreateModal}
+          onSave={handleForm}
+        />
+
         {/* مودال ویرایش تکی */}
-        <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
-          <DialogContent className="text-black gap-2 mb-2">
+        <Dialog open={isEditOpen} onOpenChange={closeEditModal}>
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit User</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label className="mb-2">Name</Label>
-                <Input
-                  value={editData.name}
-                  onChange={(e) =>
-                    setEditData({ ...editData, name: e.target.value })
-                  }
-                />
+            {editingUser && (
+              <div className="space-y-4">
+                <div>
+                  <Label>Name</Label>
+                  <Input
+                    value={editData.name}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Email</Label>
+                  <Input
+                    value={editData.email}
+                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Role</Label>
+                  <Select
+                    value={editData.role}
+                    onValueChange={(value) => setEditData({ ...editData, role: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="User">User</SelectItem>
+                      <SelectItem value="Admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Select
+                    value={editData.status}
+                    onValueChange={(value) => setEditData({ ...editData, status: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <Label className="mb-2">Email</Label>
-                <Input
-                  value={editData.email}
-                  onChange={(e) =>
-                    setEditData({ ...editData, email: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <Label className="mb-2">Role</Label>
-                <Select
-                  value={editData.role}
-                  onValueChange={(value) =>
-                    setEditData({ ...editData, role: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="User">User</SelectItem>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="mb-2">Status</Label>
-                <Select
-                  value={editData.status}
-                  onValueChange={(value) =>
-                    setEditData({ ...editData, status: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            )}
             <DialogFooter>
-              <Button variant="outline" onClick={() => setEditUser(null)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSaveEdit}>Save Changes</Button>
+              <Button variant="outline" onClick={closeEditModal}>Cancel</Button>
+              <Button onClick={handleSaveEdit} className="bg-gray-400">Save Changes</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <AlertDialog
-          open={!!deleteUser}
-          onOpenChange={() => setDeleteUser(null)}
-        >
-          <AlertDialogContent className="text-black">
+
+        {/* دیالوگ حذف تکی */}
+        <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
+          <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
@@ -274,9 +317,7 @@ export default function UsersPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleConfirmDelete}>
-                Delete
-              </AlertDialogAction>
+              <AlertDialogAction onClick={handleConfirmDelete}>Delete</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

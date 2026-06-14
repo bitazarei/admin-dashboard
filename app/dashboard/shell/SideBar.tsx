@@ -1,12 +1,14 @@
 "use client";
 
+import { ActiveLink } from "next-app-active-link";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { LayoutDashboard, Users, House, LogOut, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import React from "react";
 
-const MenuContent = ({ pathname, onLogout }: { pathname: string; onLogout: () => void }) => (
-  <div className="flex flex-col h-full">
+const MenuContent = React.memo(({ pathname, onLogout }: { pathname: string; onLogout: () => void }) => (
+  <div className="flex w-full flex-col h-full">
     <div className="flex mb-10 items-center justify-center mt-4">
       <div className="flex p-2 items-center">
         <LayoutDashboard className="w-8 h-8 mr-3" />
@@ -16,31 +18,33 @@ const MenuContent = ({ pathname, onLogout }: { pathname: string; onLogout: () =>
 
     <div className="flex-1 w-full">
       <div className="flex">
-        <a
+        <ActiveLink
           href="/dashboard"
           className={`mb-5 flex items-center gap-3 p-2 rounded transition-colors w-full ${
             pathname === "/dashboard"
               ? "bg-blue-100 text-blue-700"
               : "hover:bg-gray-100"
           }`}
+          activeClassName="bg-blue-100 text-blue-700"
         >
           <House className="w-5 h-5" />
           <span>Home</span>
-        </a>
+        </ActiveLink>
       </div>
       <span className="flex  border-b mb-6"></span>
       <div className="flex">
-        <a
+        <ActiveLink
           href="/dashboard/users"
           className={`mb-5 flex items-center gap-3 p-2 rounded transition-colors w-full ${
             pathname === "/dashboard/users"
               ? "bg-blue-100 text-blue-700"
               : "hover:bg-gray-100"
           }`}
+          activeClassName="bg-blue-100 text-blue-700"
         >
           <Users className="w-5 h-5" />
           <span>Users</span>
-        </a>
+        </ActiveLink>
       </div>
     </div>
 
@@ -56,9 +60,11 @@ const MenuContent = ({ pathname, onLogout }: { pathname: string; onLogout: () =>
       </button>
     </div>
   </div>
-);
+));
 
-export default function SideBar() {
+MenuContent.displayName = "MenuContent";
+
+export default React.memo(function SideBar() {
   const router = useRouter();
   const pathname = usePathname(); 
   const [isOpen, setIsOpen] = useState(false);
@@ -68,7 +74,7 @@ export default function SideBar() {
     if (!userData) {
       router.push("/login");
     }
-  }, [router]);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -98,4 +104,4 @@ export default function SideBar() {
       <div className="hidden md:block w-[240px]" />
     </>
   );
-}
+})

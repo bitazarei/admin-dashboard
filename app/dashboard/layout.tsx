@@ -1,14 +1,17 @@
 import SideBar from "./shell/SideBar";
 
 export default function DashboardLayoout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return(
-        <div className="flex">
-            <SideBar />
-            <main>{children}</main>
-        </div>
-    )
+  return (
+    <div className="flex w-full">
+        <SideBar />
+      <main className="flex-1 overflow-x-auto w-full">
+        {children}
+        
+      </main>
+    </div>
+  );
 }

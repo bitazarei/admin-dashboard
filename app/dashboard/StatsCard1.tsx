@@ -25,7 +25,7 @@ const StatsCard1 = (
   const isPositive = change >= 0;
 
   return (
-    <Card className={cn("w-full h-full max-w-xs", className)}>
+    <Card className={cn("w-full", className)}>
       <CardHeader className="pb-0">
         <div>
            {icon}

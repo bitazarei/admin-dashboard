@@ -52,6 +52,9 @@ export function BulkEditDialog({
             You have selected {selectedCount} users.
           </p>
           <div>
+
+            {/* Role */}
+
             <Label>Role</Label>
             <Select value={role} onValueChange={setRole}>
               <SelectTrigger>

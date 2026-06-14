@@ -46,11 +46,11 @@ export function UserCard({ user, isSelected, onSelect, onEdit, onDelete }: UserC
       
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-gray-500">Email:</span>
+          <span className="text-black">Email:</span>
           <span className="text-gray-700">{user.email}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-500">Role:</span>
+          <span className="text-black">Role:</span>
           <Badge variant={user.role === "Admin" ? "default" : "secondary"}>
             {user.role}
           </Badge>
