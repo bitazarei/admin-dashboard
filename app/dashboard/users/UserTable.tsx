@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Pencil, Trash2 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface UserTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,6 +49,7 @@ export function UserTable<
   onEdit,
   onDelete,
 }: UserTableProps<TData, TData>) {
+  const { t } = useLanguage();
   const table = useReactTable({
     data,
     columns,
@@ -63,7 +65,6 @@ export function UserTable<
     onSelectedRowsChange?.(selectedRows);
   }, [table.getSelectedRowModel().rows, onSelectedRowsChange]);
 
-  // کارت نمایش در موبایل
   const UserCard = ({ user }: { user: TData }) => {
     const isSelected = table
       .getSelectedRowModel()
@@ -71,7 +72,7 @@ export function UserTable<
 
     return (
       <div
-        className={`border rounded-lg p-4 mb-3 ${isSelected ? "bg-blue-50 border-blue-300" : "bg-white"}`}
+        className={`border rounded-lg p-4 mb-3 ${isSelected ? "bg-blue-50 border-blue-300 dark:bg-blue-900 dark:border-blue-700" : "bg-white dark:bg-black dark:text-white"}`}
       >
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -84,7 +85,9 @@ export function UserTable<
                 row?.toggleSelected();
               }}
             />
-            <span className="font-semibold text-lg">{user.name}</span>
+            <span className="font-semibold text-lg dark:text-white">
+              {user.name}
+            </span>
           </div>
           <div className="flex gap-2">
             <Button
@@ -108,28 +111,42 @@ export function UserTable<
 
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-black">Email:</span>
-            <span className="text-gray-700 break-all text-right ml-2">
+            <span className="dark:text-gray-300">
+              {t.users?.table?.email || "Email"}:
+            </span>
+            <span className="text-gray-700 break-all text-right ml-2 dark:text-gray-300">
               {user.email}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-black">Role:</span>
+            <span className="dark:text-gray-300">
+              {t.users?.table?.role || "Role"}:
+            </span>
             <Badge variant={user.role === "Admin" ? "default" : "secondary"}>
               {user.role}
             </Badge>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Status:</span>
+            <span className="dark:text-gray-300">
+              {t.users?.table?.status || "Status"}:
+            </span>
             <Badge
-              className={user.status === "Active" ? "bg-black" : "bg-black"}
+              className={
+                user.status === "Active"
+                  ? "bg-black text-white dark:bg-[#27272a] dark:text-white"
+                  : "bg-black dark:bg-[#27272a] dark:text-white"
+              }
             >
               {user.status}
             </Badge>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Joined:</span>
-            <span>{new Date(user.createdAt).toLocaleDateString()}</span>
+            <span className="dark:text-gray-300">
+              {t.users?.table?.joined || "Joined"}:
+            </span>
+            <span className="dark:text-gray-300">
+              {new Date(user.createdAt).toLocaleDateString()}
+            </span>
           </div>
         </div>
       </div>
@@ -139,14 +156,14 @@ export function UserTable<
   return (
     <div>
       {/* نمای دسکتاپ (جدول) */}
-      <div className="hidden md:block">
-        <div className="rounded-md border">
+      <div className="hidden md:block rounded-lg p-5 dark:bg-black">
+        <div className="rounded-md border dark:border-gray-700">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow key={headerGroup.id} className="dark:border-gray-700">
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="dark:text-gray-300">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -166,12 +183,15 @@ export function UserTable<
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
+                      className="dark:border-gray-700"
                     >
                       {row.getVisibleCells().map((cell) => {
-                        // اگر ستون actions هست، دکمه‌های ادیت و حذف رو نشون بده
                         if (cell.column.id === "actions") {
                           return (
-                            <TableCell key={cell.id}>
+                            <TableCell
+                              key={cell.id}
+                              className="dark:text-gray-300"
+                            >
                               <div className="flex gap-2">
                                 <Button
                                   variant="ghost"
@@ -194,7 +214,10 @@ export function UserTable<
                           );
                         }
                         return (
-                          <TableCell key={cell.id}>
+                          <TableCell
+                            key={cell.id}
+                            className="dark:text-gray-300"
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext(),
@@ -206,12 +229,12 @@ export function UserTable<
                   );
                 })
               ) : (
-                <TableRow>
+                <TableRow className="dark:border-gray-700">
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center dark:text-gray-400"
                   >
-                    No results.
+                    {t.users?.noResults || "No results."}
                   </TableCell>
                 </TableRow>
               )}
@@ -222,13 +245,13 @@ export function UserTable<
 
       {/* نمای موبایل (کارت‌ها) */}
       <div className="md:hidden">
-        <div className="flex items-center justify-between mb-4 p-2 bg-gray-50 rounded-lg">
+        <div className="flex items-center justify-between mb-4 p-2 rounded-lg dark:text-black">
           <label className="flex items-center gap-2 text-sm">
             <Checkbox
               checked={table.getIsAllPageRowsSelected()}
               onCheckedChange={() => table.toggleAllPageRowsSelected()}
             />
-            Select All ({data.length})
+            {t.users?.selectAll || "Select All"} ({data.length})
           </label>
         </div>
 
@@ -237,7 +260,9 @@ export function UserTable<
             <UserCard key={user.id} user={user} />
           ))}
           {data.length === 0 && (
-            <div className="text-center py-8 text-gray-500">No results.</div>
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              {t.users?.noResults || "No results."}
+            </div>
           )}
         </div>
       </div>

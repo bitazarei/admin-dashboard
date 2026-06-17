@@ -1,0 +1,66 @@
+{
+  "welcome": "Bienvenido",
+  "dashboard": {
+    "title": "Panel de Control",
+    "subtitle": "Este es un resumen de la actividad de tus usuarios hoy",
+    "totalUsers": "Usuarios Totales",
+    "activeUsers": "Usuarios Activos",
+    "admins": "Administradores",
+    "inactiveUsers": "Usuarios Inactivos"
+  },
+  "users": {
+    "title": "Gestión de Usuarios",
+    "subtitle": "Gestiona todos tus usuarios, crea nuevos usuarios y realiza acciones en masa",
+    "table": {
+      "name": "Nombre",
+      "email": "Correo Electrónico",
+      "role": "Rol",
+      "status": "Estado",
+      "joined": "Fecha de Registro",
+      "actions": "Acciones"
+    },
+    "create": "Crear Usuario",
+    "createTitle": "Crear Nuevo Usuario",
+    "edit": "Editar Usuario",
+    "delete": "Eliminar Usuario",
+    "editSelected": "Editar Seleccionados",
+    "deleteSelected": "Eliminar Seleccionados",
+    "selected": "seleccionado",
+    "selectedCount": "Has seleccionado {{count}} usuarios",
+    "save": "Guardar Cambios",
+    "cancel": "Cancelar",
+    "confirmDelete": "¿Estás seguro?",
+    "confirmDeleteDesc": "Esta acción eliminará permanentemente la cuenta de {{name}}",
+    "bulkEditTitle": "Edición Masiva de Usuarios",
+    "selectRole": "Seleccionar rol",
+    "selectStatus": "Seleccionar estado",
+    "applyChanges": "Aplicar Cambios",
+    "namePlaceholder": "Ingresa el nombre",
+    "emailPlaceholder": "Ingresa la dirección de correo electrónico",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Ingresa la contraseña"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "user": "Usuario"
+  },
+  "status": {
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "sidebar": {
+    "home": "Inicio",
+    "users": "Usuarios",
+    "logout": "Cerrar Sesión"
+  },
+  "login": {
+    "title": "Bienvenido de nuevo",
+    "subtitle": "Inicia sesión en tu cuenta para continuar",
+    "emailLabel": "Correo Electrónico",
+    "emailPlaceholder": "Ingresa tu correo electrónico",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "Ingresa tu contraseña",
+    "submitButton": "Iniciar Sesión",
+    "error": "Correo o contraseña incorrectos"
+  }
+}

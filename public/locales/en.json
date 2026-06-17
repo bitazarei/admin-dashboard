@@ -1,0 +1,66 @@
+{
+  "welcome": "Welcome back",
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Here is what is happening with your users today",
+    "totalUsers": "Total Users",
+    "activeUsers": "Active Users",
+    "admins": "Admins",
+    "inactiveUsers": "Inactive Users"
+  },
+  "users": {
+    "title": "User Management",
+    "subtitle": "Manage all your users, create new users, and perform bulk actions",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "bulkEditTitle": "Bulk Edit Users",
+    "selectedCount": "You have selected {{count}} users.",
+    "selectRole": "Select role",
+    "selectStatus": "Select status",
+    "applyChanges": "Apply Changes",
+    "createTitle": "Create New User",
+    "namePlaceholder": "Input Name",
+    "emailPlaceholder": "Input Email Address",
+    "password": "Password",
+    "passwordPlaceholder": "Input Password",
+    "create": "Create User",
+    "edit": "Edit User",
+    "delete": "Delete User",
+    "editSelected": "Edit Selected",
+    "deleteSelected": "Delete Selected",
+    "selected": "selected",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "confirmDelete": "Are you sure?",
+    "confirmDeleteDesc": "This will permanently delete {name}'s account"
+  },
+  "roles": {
+    "admin": "Admin",
+    "user": "User"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "sidebar": {
+    "home": "Home",
+    "users": "Users",
+    "logout": "Logout"
+  },
+    "login": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to your account to continue",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submitButton": "Sign In",
+    "error": "Invalid credentials"
+  }
+}

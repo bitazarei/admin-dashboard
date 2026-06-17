@@ -1,0 +1,66 @@
+{
+  "welcome": "Willkommen zurück",
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Hier ist, was heute mit Ihren Benutzern passiert",
+    "totalUsers": "Benutzer insgesamt",
+    "activeUsers": "Aktive Benutzer",
+    "admins": "Administratoren",
+    "inactiveUsers": "Inaktive Benutzer"
+  },
+  "users": {
+    "title": "Benutzerverwaltung",
+    "subtitle": "Verwalten Sie alle Ihre Benutzer, erstellen Sie neue Benutzer und führen Sie Massenaktionen durch",
+    "table": {
+      "name": "Name",
+      "email": "E-Mail",
+      "role": "Rolle",
+      "status": "Status",
+      "joined": "Beigetreten",
+      "actions": "Aktionen"
+    },
+    "create": "Benutzer erstellen",
+    "createTitle": "Neuen Benutzer erstellen",
+    "edit": "Benutzer bearbeiten",
+    "delete": "Benutzer löschen",
+    "editSelected": "Ausgewählte bearbeiten",
+    "deleteSelected": "Ausgewählte löschen",
+    "selected": "ausgewählt",
+    "selectedCount": "Sie haben {{count}} Benutzer ausgewählt",
+    "save": "Änderungen speichern",
+    "cancel": "Abbrechen",
+    "confirmDelete": "Sind Sie sicher?",
+    "confirmDeleteDesc": "Dies wird das Konto von {{name}} dauerhaft löschen",
+    "bulkEditTitle": "Benutzer massenhaft bearbeiten",
+    "selectRole": "Rolle auswählen",
+    "selectStatus": "Status auswählen",
+    "applyChanges": "Änderungen übernehmen",
+    "namePlaceholder": "Name eingeben",
+    "emailPlaceholder": "E-Mail-Adresse eingeben",
+    "password": "Passwort",
+    "passwordPlaceholder": "Passwort eingeben"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "user": "Benutzer"
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "Inaktiv"
+  },
+  "sidebar": {
+    "home": "Startseite",
+    "users": "Benutzer",
+    "logout": "Abmelden"
+  },
+  "login": {
+    "title": "Willkommen zurück",
+    "subtitle": "Melden Sie sich an, um fortzufahren",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "Geben Sie Ihre E-Mail ein",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Geben Sie Ihr Passwort ein",
+    "submitButton": "Anmelden",
+    "error": "Ungültige Anmeldeinformationen"
+  }
+}

@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLanguage } from "@/context/LanguageContext";
 
 type BulkEditDialogProps = {
   open: boolean;
@@ -31,6 +32,7 @@ export function BulkEditDialog({
   selectedCount,
   onSave,
 }: BulkEditDialogProps) {
+  const { t } = useLanguage();
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("");
 
@@ -45,46 +47,44 @@ export function BulkEditDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Bulk Edit Users</DialogTitle>
+          <DialogTitle>{t.users?.bulkEditTitle || "Bulk Edit Users"}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <p className="text-sm text-muted-foreground">
-            You have selected {selectedCount} users.
+            {t.users?.selectedCount?.replace("{count}", selectedCount.toString()) ||
+              `You have selected ${selectedCount} users.`}
           </p>
           <div>
-
-            {/* Role */}
-
-            <Label>Role</Label>
+            <Label>{t.users?.table?.role || "Role"}</Label>
             <Select value={role} onValueChange={setRole}>
               <SelectTrigger>
-                <SelectValue placeholder="Select role" />
+                <SelectValue placeholder={t.users?.selectRole || "Select role"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="User">User</SelectItem>
-                <SelectItem value="Admin">Admin</SelectItem>
+                <SelectItem value="User">{t.roles?.user || "User"}</SelectItem>
+                <SelectItem value="Admin">{t.roles?.admin || "Admin"}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label>Status</Label>
+            <Label>{t.users?.table?.status || "Status"}</Label>
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger>
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder={t.users?.selectStatus || "Select status"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="Inactive">Inactive</SelectItem>
+                <SelectItem value="Active">{t.status?.active || "Active"}</SelectItem>
+                <SelectItem value="Inactive">{t.status?.inactive || "Inactive"}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t.users?.cancel || "Cancel"}
           </Button>
           <Button onClick={handleSave} disabled={!role && !status}>
-            Apply Changes
+            {t.users?.applyChanges || "Apply Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>

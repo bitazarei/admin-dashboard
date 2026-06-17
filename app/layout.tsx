@@ -1,17 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Manrope } from "next/font/google";
-import { Inter } from "next/font/google";
+import { Manrope } from "next/font/google";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { ThemeProvider } from "@/components/theme";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -21,7 +12,7 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "Dashboard Penal",
+  description: "Dashboard Panel",
 };
 
 export default function RootLayout({
@@ -30,8 +21,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} h-full w-full bg-black`}>
-      <body className="min-h-full w-full flex flex-col">{children}</body>
+    <html lang="en" className={`${manrope.variable}`} suppressHydrationWarning>
+      <body className="min-h-full w-full flex flex-col">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <LanguageProvider>{children}</LanguageProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

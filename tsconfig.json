@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/dashboard/activity"  ],
+, "app/dashboard/activity", "app/api/users/stats"  ],
   "exclude": ["node_modules"]
 }

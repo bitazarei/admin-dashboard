@@ -1,7 +1,7 @@
 "use client";
 
-import { Pencil, Trash2 , UserPlus  } from "lucide-react";
-
+import { Pencil, Trash2, UserPlus } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface HeaderTableProps {
   selectedCount: number;
@@ -16,36 +16,36 @@ export default function HeaderTable({
   onDeleteSelected,
   onFormSelected,
 }: HeaderTableProps) {
-  console.log("count:", selectedCount);
+  const { t } = useLanguage();
 
   return (
-    <div className="flex justify-between flex-wrap gap-2 sm:gap-4  items-center p-2 sm:p-4 border-b mb-4">
+    <div className="flex justify-between flex-wrap gap-2 sm:gap-4 items-center p-2 sm:p-4 border-b mb-4">
       <div className="flex flex-wrap gap-2 sm:gap-4 items-center">
         <div className="text-sm font-medium">
-          {selectedCount} selected
+          {selectedCount} {t.users?.selected || "selected"}
         </div>
-        <div 
+        <div
           className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
           onClick={onEditSelected}
         >
           <Pencil className="h-4 w-4" />
-          <p>Edit Selected</p>
+          <p>{t.users?.editSelected || "Edit Selected"}</p>
         </div>
-        <div 
+        <div
           className="flex items-center gap-2 cursor-pointer hover:text-red-600"
           onClick={onDeleteSelected}
         >
           <Trash2 className="h-4 w-4" />
-          <p>Delete Selected</p>
+          <p>{t.users?.deleteSelected || "Delete Selected"}</p>
         </div>
       </div>
       <div>
-        <div 
-        className="flex flex-wrap gap-1 sm:gap-2 items-center cursor-pointer hover:text-green-500"
-        onClick={onFormSelected}
+        <div
+          className="flex flex-wrap gap-1 sm:gap-2 items-center cursor-pointer hover:text-green-500"
+          onClick={onFormSelected}
         >
-          <UserPlus className="w-4 h-4"/>
-          <p>User Create</p>
+          <UserPlus className="w-4 h-4" />
+          <p>{t.users?.create || "Create User"}</p>
         </div>
       </div>
     </div>
