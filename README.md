@@ -1,6 +1,7 @@
 # 🔐 Admin Dashboard – Next.js 16 + Shadcn/ui + Prisma
 
-A modern, fully responsive admin dashboard with complete user management system.  
+A modern, fully responsive admin dashboard with complete user management system.  <img width="684" height="2738" alt="localhost_3000_dashboard (6)" src="https://github.com/user-attachments/assets/f928a8c4-153b-4039-8f60-c7f8e4dff51d" />
+
 Built with **Next.js 16 (App Router)**, **Tailwind CSS**, **Shadcn/ui**, **Prisma ORM** and **SQLite**.
 
 ---
@@ -34,7 +35,6 @@ Built with **Next.js 16 (App Router)**, **Tailwind CSS**, **Shadcn/ui**, **Prism
 ## 📸 Screenshots
 
 > *<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/90a0741f-ee3c-43ef-8f13-dc8bc94d7848" />
-*<img width="1366" height="768" alt="Screenshot (182)" src="https://github.com/user-attachments/assets/f6b613ed-b96f-4dd3-bb8c-52c184d8dd43" />
 *
 ><img width="1366" height="768" alt="Screenshot (181)" src="https://github.com/user-attachments/assets/54629d29-aebc-4304-bad1-085097287188" />
 <img width="656" height="1728" alt="localhost_3000_dashboard (2)" src="https://github.com/user-attachments/assets/f3c75228-00a7-45aa-b534-079a04539b52" />
