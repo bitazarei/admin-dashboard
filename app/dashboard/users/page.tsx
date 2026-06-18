@@ -63,7 +63,13 @@ export default function UsersPage() {
 
   const isCreateOpen = searchParams.get("create") === "true";
   const selectedUserId = searchParams.get("edit");
-const editingUser = users?.find((user) => user.id === selectedUserId) || null;  const isEditOpen = !!selectedUserId && !!editingUser;
+
+  // ✅ اصلاح: اطمینان از اینکه users آرایه است و find روی آن اجرا می‌شود
+  const editingUser = Array.isArray(users)
+    ? users.find((user) => user.id === selectedUserId) || null
+    : null;
+
+  const isEditOpen = !!selectedUserId && !!editingUser;
 
   const columns = getColumns(t);
 
@@ -91,22 +97,43 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
- const fetchUsers = useCallback(async () => {
-  try {
-    const res = await fetch("/api/users");
-    if (!res.ok) throw new Error("Failed to fetch users");
-    const data = await res.json();
-    setUsers(Array.isArray(data) ? data : []); 
-  } catch (error) {
-    console.error("Fetch error:", error);
-    setUsers([]); 
-  }
-}, []);
+  const fetchUsers = useCallback(async () => {
+    console.log("Fetching users..."); // ← اضافه کن
+    try {
+      const res = await fetch("/api/users");
+      if (!res.ok) throw new Error("Failed to fetch users");
+      const data = await res.json();
+      console.log("Users data:", data); // ← اضافه کن
+      setUsers(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setUsers([]);
+    }
+  }, []);
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    let isMounted = true;
 
+    const loadUsers = async () => {
+      try {
+        const res = await fetch("/api/users");
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const data = await res.json();
+        if (isMounted) {
+          setUsers(Array.isArray(data) ? data : []);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        if (isMounted) setUsers([]);
+      }
+    };
+
+    loadUsers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   const handleSelectedRowsChange = useCallback((rows: User[]) => {
     setSelectedUsers(rows);
   }, []);
@@ -131,7 +158,9 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
         body: JSON.stringify(editData),
       });
 
+      console.log("Edit response status:", res.status); // ← این رو اضافه کن
       if (res.ok) {
+        console.log("Edit successful, fetching users..."); // ← این رو اضافه کن
         await fetchUsers();
         closeEditModal();
       }
@@ -163,7 +192,7 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
 
   const handleBulkEdit = async (role: string, status: string) => {
     const ids = selectedUsers.map((u) => u.id);
-    const res = await fetch("/api/users", {
+    const res = await fetch("/api/bulk", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids, role, status }),
@@ -181,7 +210,7 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
     email: string,
     password: string,
     role: string,
-    status: string
+    status: string,
   ) => {
     const res = await fetch("/api/users", {
       method: "POST",
@@ -230,7 +259,6 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
           onEditSelected={handleEditSelected}
           onDeleteSelected={handleDeleteSelected}
           onFormSelected={openCreateModal}
-          t={t}
         />
 
         <div className="mt-4 sm:mt-6">
@@ -240,7 +268,6 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
             onSelectedRowsChange={handleSelectedRowsChange}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            t={t}
           />
         </div>
 
@@ -249,14 +276,12 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
           onOpenChange={setBulkEditOpen}
           selectedCount={selectedUsers.length}
           onSave={handleBulkEdit}
-          t={t}
         />
 
         <NewUserForm
           open={isCreateOpen}
           onOpenCreate={closeCreateModal}
           onSave={handleForm}
-          t={t}
         />
 
         <Dialog open={isEditOpen} onOpenChange={closeEditModal}>
@@ -296,8 +321,12 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="User">{t.roles?.user || "User"}</SelectItem>
-                      <SelectItem value="Admin">{t.roles?.admin || "Admin"}</SelectItem>
+                      <SelectItem value="User">
+                        {t.roles?.user || "User"}
+                      </SelectItem>
+                      <SelectItem value="Admin">
+                        {t.roles?.admin || "Admin"}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -313,7 +342,9 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Active">{t.status?.active || "Active"}</SelectItem>
+                      <SelectItem value="Active">
+                        {t.status?.active || "Active"}
+                      </SelectItem>
                       <SelectItem value="Inactive">
                         {t.status?.inactive || "Inactive"}
                       </SelectItem>
@@ -326,22 +357,34 @@ const editingUser = users?.find((user) => user.id === selectedUserId) || null;  
               <Button variant="outline" onClick={closeEditModal}>
                 {t.users?.cancel || "Cancel"}
               </Button>
-              <Button onClick={handleSaveEdit}>{t.users?.save || "Save Changes"}</Button>
+              <Button onClick={handleSaveEdit}>
+                {t.users?.save || "Save Changes"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
+        <AlertDialog
+          open={!!deleteUser}
+          onOpenChange={() => setDeleteUser(null)}
+        >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>{t.users?.confirmDelete || "Are you sure?"}</AlertDialogTitle>
+              <AlertDialogTitle>
+                {t.users?.confirmDelete || "Are you sure?"}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                {t.users?.confirmDeleteDesc?.replace("{name}", deleteUser?.name || "") ||
+                {t.users?.confirmDeleteDesc?.replace(
+                  "{name}",
+                  deleteUser?.name || "",
+                ) ||
                   `This will permanently delete ${deleteUser?.name}'s account.`}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>{t.users?.cancel || "Cancel"}</AlertDialogCancel>
+              <AlertDialogCancel>
+                {t.users?.cancel || "Cancel"}
+              </AlertDialogCancel>
               <AlertDialogAction onClick={handleConfirmDelete}>
                 {t.users?.delete || "Delete"}
               </AlertDialogAction>
