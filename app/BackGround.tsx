@@ -6,19 +6,12 @@ import { cn } from "@/lib/utils";
 export interface DotPatternProps {
   className?: string;
   children?: React.ReactNode;
-  /** Dot diameter in pixels */
   dotSize?: number;
-  /** Gap between dots in pixels */
   gap?: number;
-  /** Base dot color (hex) */
   baseColor?: string;
-  /** Glow color on hover (hex) */
   glowColor?: string;
-  /** Mouse proximity radius for highlighting */
   proximity?: number;
-  /** Glow intensity multiplier */
   glowIntensity?: number;
-  /** Wave animation speed (0 to disable) */
   waveSpeed?: number;
 }
 
@@ -54,8 +47,8 @@ export function DotPattern({
   const containerRef = useRef<HTMLDivElement>(null);
   const dotsRef = useRef<Dot[]>([]);
   const mouseRef = useRef({ x: -1000, y: -1000 });
-  const animationRef = useRef<number>();
-  const startTimeRef = useRef(Date.now());
+  const animationRef = useRef<number | undefined>(undefined);
+  const startTimeRef = useRef<number>(Date.now());
 
   const baseRgb = useMemo(() => hexToRgb(baseColor), [baseColor]);
   const glowRgb = useMemo(() => hexToRgb(glowColor), [glowColor]);
@@ -115,7 +108,6 @@ export function DotPattern({
       const dy = dot.y - my;
       const distSq = dx * dx + dy * dy;
 
-      // Wave animation
       const wave = Math.sin(dot.x * 0.02 + dot.y * 0.02 + time) * 0.5 + 0.5;
       const waveOpacity = dot.baseOpacity + wave * 0.15;
       const waveScale = 1 + wave * 0.2;
@@ -127,13 +119,11 @@ export function DotPattern({
       let b = baseRgb.b;
       let glow = 0;
 
-      // Mouse proximity effect
       if (distSq < proxSq) {
         const dist = Math.sqrt(distSq);
         const t = 1 - dist / proximity;
-        const easedT = t * t * (3 - 2 * t); // smoothstep
+        const easedT = t * t * (3 - 2 * t);
 
-        // Interpolate color
         r = Math.round(baseRgb.r + (glowRgb.r - baseRgb.r) * easedT);
         g = Math.round(baseRgb.g + (glowRgb.g - baseRgb.g) * easedT);
         b = Math.round(baseRgb.b + (glowRgb.b - baseRgb.b) * easedT);
@@ -145,7 +135,6 @@ export function DotPattern({
 
       const radius = (dotSize / 2) * scale;
 
-      // Draw glow
       if (glow > 0) {
         const gradient = ctx.createRadialGradient(
           dot.x,
@@ -173,7 +162,6 @@ export function DotPattern({
         ctx.fill();
       }
 
-      // Draw dot
       ctx.beginPath();
       ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
@@ -184,6 +172,7 @@ export function DotPattern({
   }, [proximity, baseRgb, glowRgb, dotSize, glowIntensity, waveSpeed]);
 
   useEffect(() => {
+    startTimeRef.current = Date.now();
     buildGrid();
 
     const container = containerRef.current;
@@ -241,7 +230,6 @@ export function DotPattern({
     >
       <canvas ref={canvasRef} className="absolute z-0 h-full w-full" />
 
-      {/* Vignette overlay */}
       <div
         className="pointer-events-none absolute inset-0 z-0"
         style={{
@@ -250,7 +238,6 @@ export function DotPattern({
         }}
       />
 
-      {/* Content layer */}
       {children && (
         <div className="relative z-10 h-full w-full">{children}</div>
       )}
@@ -259,5 +246,5 @@ export function DotPattern({
 }
 
 export default function DotPatternDemo() {
-  return <DotPattern className="bg-gray-300" />;
+  return <DotPattern className="bg-gray-400" />;
 }
